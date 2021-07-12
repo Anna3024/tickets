@@ -15,11 +15,6 @@ a {
 li {
     list-style-type: none;
 }
-.contentContainer {
-    width: 1800px;
-    margin-left: auto;
-    margin-right: auto;
-}
 .ActivePageLink {
     font-weight: bold;
 }

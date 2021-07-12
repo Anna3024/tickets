@@ -3,7 +3,6 @@ import styled from 'styled-components';
 
 // import { NavLink } from 'react-router-dom';
 
-
 const StyledCard = styled.div`
     width: 240px;
     height: 360px;

@@ -1,9 +1,12 @@
 import React from 'react';
+// import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
+
+import {Container} from '@material-ui/core';
 
 import LogSignField from '../components/LogSignField'
 
-const FlexedFields = styled.div`
+const FlexedFields = styled(Container)`
   display: flex;
   justify-content: center;
   margin-top: 200px;
@@ -13,7 +16,7 @@ const FlexedFields = styled.div`
 const Page_LogIn :React.FC = () => {
 
   return (
-    <FlexedFields className='contentContainer'>
+    <FlexedFields maxWidth="xl">
       <LogSignField mode = "LogIn"/> 
       <LogSignField mode = "SignUp"/> 
     </FlexedFields>

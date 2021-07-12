@@ -1,4 +1,6 @@
 import React from 'react';
+
+import {Container} from '@material-ui/core';
 // import { NavLink } from 'react-router-dom';
 // import styled from 'styled-components';
 
@@ -6,10 +8,10 @@ import React from 'react';
 const Page_CinemasAll:React.FC = () => {
 
     return (
-      <div className="page_cinemasAll">
+      <Container maxWidth="xl">
         Cinemas
         
-      </div>
+      </Container>
     )
 
 }

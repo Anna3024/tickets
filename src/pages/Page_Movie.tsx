@@ -2,13 +2,15 @@ import React from 'react';
 // import { NavLink } from 'react-router-dom';
 // import styled from 'styled-components';
 
+import {Container} from '@material-ui/core';
+
 const Page_Movie: React.FC = () => {
         
 
   return (
-    <div className="page_movie">
+    <Container maxWidth="xl">
       Movie
-    </div>
+    </Container>
   )
 
 }

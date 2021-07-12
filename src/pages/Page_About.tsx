@@ -1,4 +1,5 @@
 import React from 'react';
+import {Container} from '@material-ui/core';
 // import { NavLink } from 'react-router-dom';
 // import styled from 'styled-components';
 
@@ -7,9 +8,11 @@ import React from 'react';
 const Page_About: React.FC = () => {
 
   return (
-    <div className="page_About">
+    <Container maxWidth="xl">
       About
-    </div>
+      <br/>
+      abhgvcfgcgh
+    </Container>
   )
 
 }

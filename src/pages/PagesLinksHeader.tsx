@@ -1,14 +1,15 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
+// import {connect} from 'react-redux';
+// import { AppStateType } from '../redux/rootReducer';
 
 import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import InputBase from '@material-ui/core/InputBase';
-import IconButton from '@material-ui/core/IconButton';
+import {InputBase, IconButton, Paper, Container} from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 
 import HeaderLink from '../components/HeaderLink'
+import { useAuth } from "../context/AuthContext"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -67,13 +68,13 @@ const FlexedContainer = styled.div`
 `;
 
 const PagesLinksHeader: React.FC = () => {
+  const { currentUser } = useAuth()
+
   const classes = useStyles();
     return (
-      <header>
-        <FlexedContainer className='contentContainer'>
-          <StyledLogo to="/" exact className="logo">F-MAX</StyledLogo>
-
-          
+      <Container maxWidth="xl">
+        <FlexedContainer >
+          <StyledLogo to="/" exact className="logo">F-MAX</StyledLogo>          
           <FlexedHeaderLinks>
 
             <Paper component="form" className={classes.root}>
@@ -90,14 +91,22 @@ const PagesLinksHeader: React.FC = () => {
             <HeaderLink to="/movies" text='Фильмы' />
             <HeaderLink to="/cinemas" text='Кинотеатры'/>
             <HeaderLink to="/about" text='О нас'/>
-            <HeaderLink to="/logIn" text='Личный кабинет'/>
+            <HeaderLink to={currentUser?"/cabinet":"/logIn"} text='Личный кабинет'/>
 
           </FlexedHeaderLinks>
         </FlexedContainer>
-      </header>
+      </Container>
     );
 
 }
+
+// const mapStatetoProps  = (state:AppStateType) => {
+//   return {
+//     userData: state.user.isAuthorized
+//   }
+// }
+    
+// export default connect(mapStatetoProps, null)(PagesLinksHeader);
     
 export default PagesLinksHeader;
     

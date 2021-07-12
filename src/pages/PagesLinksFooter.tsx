@@ -1,7 +1,8 @@
 import React from 'react';
 // import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
-;
+import {Container} from '@material-ui/core';
+
 
 const StyledFooter = styled.div`
   background-color: #000912;
@@ -12,10 +13,10 @@ const StyledFooter = styled.div`
 const PagesLinksFooter: React.FC = () => {
     return (
       <StyledFooter>
-        <div className="contentContainer">
+        <Container maxWidth="xl">
         
         footer 
-        </div> 
+        </Container> 
       </StyledFooter> 
     );
 

@@ -1,12 +1,15 @@
 import React , { useState, useEffect } from 'react';
 import styled from 'styled-components'
+import { useHistory } from 'react-router-dom';
 
 import {TextField, Button} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { useHttp } from '../hooks/http.hook';
-import SimpleSnackbar from './SnackBar'
+// import { useHttp } from '../hooks/http.hook';
 import InputPassword from './InputPassword'
+import SimpleSnackbar from './SnackBar'
+
+import { useAuth } from "../context/AuthContext"
 
 const Field = styled.div`
   width: 487px;
@@ -58,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
   }));
 
 type Props = {
-    mode: "LogIn" | "SignUp"
+    mode: "LogIn" | "SignUp",
 }
 
 type FormType = {
@@ -69,21 +72,18 @@ type FormType = {
 const LogSignField: React.FC<Props> = (props) => {
 
     const classes = useStyles();
-    const {loading, request, error, clearError}  = useHttp();
+    const history = useHistory()
+
+    const { signup, login } = useAuth()
 
     const [form, setForm] = useState<FormType>({
         email: '', password: ''
     })
     const [confirmPassword, setConfirmPassword] = useState<String>('')//повторить пароль
     const [openTip, setOpenTip] = useState<String>("") //окошко с подсказкой
+    const [loading, setLoading] = useState(false)
     const [errMessage, setErrMessage] = React.useState<String>("") //сообщение с сервера
 
-    useEffect(()=>{
-      if (error!=null) {
-        setErrMessage(error || '');
-        clearError()
-      }
-    }, [error, clearError])
 
     const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => { //записать данные из формы 
         setForm({...form, [event.target.name]: event.target.value})
@@ -98,27 +98,70 @@ const LogSignField: React.FC<Props> = (props) => {
     }
 
     const registerHandler = async () => { //отправить форму
-        if (!form.email.trim()) {
-            setOpenTip("Введите email") //открыть всплывающее окно
-            return
-        }
-
-        if (!form.password.trim() || form.password.length<6) {
-            setOpenTip("Минимальная длина пароля 6 символов") //открыть всплывающее окно
-            return
-        }
-
-        if ((props.mode==="SignUp")&&(form.password!==confirmPassword)) {
-          setOpenTip("Пароли не совпадают, введите ещё раз") //открыть всплывающее окно
+      setErrMessage("")
+      if (!form.email.trim()) {
+          setOpenTip("Введите email") //открыть всплывающее окно
           return
-        }
-
-        try {
-            const data = await request (`api/auth/${props.mode==="LogIn"?'login':'register'}`, 'POST', {...form}) //3 параметра: 1)URL; 2) метод; 3)передаваемые данные
-            console.log('Data', data);
-        } catch (e) {}
-         
       }
+
+      if (!form.password.trim() || form.password.length<6) {
+          setOpenTip("Минимальная длина пароля 6 символов") //открыть всплывающее окно
+          return
+      }
+
+      if ((props.mode==="SignUp")&&(form.password!==confirmPassword)) {
+        setOpenTip("Пароли не совпадают, введите ещё раз") //открыть всплывающее окно
+        return
+      }
+
+      setLoading(true)
+
+      if (props.mode==="SignUp") {
+        try {
+          await signup(form.email, form.password)
+          history.push('/cabinet')
+
+        } catch (error) {
+          switch (error.code) {
+            case "auth/email-already-in-use":
+              setErrMessage('Пользователь с таким email уже зарегестрирован')
+              break;
+            case "auth/invalid-email":
+              setErrMessage('Некорректный email')
+              break;
+            default:
+              setErrMessage(error.message)
+              break;
+          }
+        }
+      }
+
+      if (props.mode==="LogIn") {
+        try {
+          await login(form.email, form.password)
+          history.push('/cabinet')
+
+        } catch (error) {
+          console.log(error)
+          switch (error.code) {
+            case "auth/wrong-password":
+              setErrMessage('Неверный пароль')
+              break;
+            case "auth/invalid-email":
+              setErrMessage('Некорректный email')
+              break;
+            case "auth/user-not-found":
+              setErrMessage('Пользователь не зарегистрирован')
+              break;
+            default:
+              setErrMessage(error.message)
+              break;
+          }
+        }
+      }
+
+      setLoading(false)
+    }
 
     return (
         <Field>

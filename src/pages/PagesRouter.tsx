@@ -8,7 +8,7 @@ import Page_MoviesAll from './Page_MoviesAll';
 import Page_Movie from './Page_Movie';
 import Page_About from './Page_About';
 import Page_LogIn from './Page_LogIn';
-
+import Page_Cabinet from './Page_Cabinet';
 
 const PagesRouter: React.FC = () => {
 
@@ -21,6 +21,7 @@ const PagesRouter: React.FC = () => {
         <Route path="/movies/:movieId" component={Page_Movie} />
         <Route path="/about" component={Page_About} />
         <Route path="/logIn" component={Page_LogIn} />
+        <Route path="/cabinet" component={Page_Cabinet} />
         <Redirect to='/'/>
       </Switch>
     );
