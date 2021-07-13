@@ -1,35 +1,41 @@
-import { USER_LOGIN, USER_SIGNUP, USER_LOGOUT } from "./types";
+import { USER_LOGOUT, SET_USER } from "./types";
 
-export type UserLoginActionType = {
-    type: typeof USER_LOGIN,
-    payload: object
-}
-
-export type UserSignupActionType = {
-    type: typeof USER_SIGNUP,
-    payload: object
-}
+import { auth } from "../firebase"
 
 export type UserLogoutActionType = {
     type: typeof USER_LOGOUT,
 }
 
-export function userLogin(user:object):UserLoginActionType {
-    return {
-        type: USER_LOGIN,
-        payload: user
+export type SetUserActionType = {
+    type: typeof SET_USER,
+    payload: object | null
+}
+
+export function userLogin(email:string, password:string) {
+    return async (dispatch:any) => {
+        const response = await auth.signInWithEmailAndPassword(email, password)
+        dispatch({type: SET_USER, payload: JSON.parse(JSON.stringify(response.user))})
     }
 }
 
-export function userSignup(user:object):UserSignupActionType {
-    return {
-        type: USER_SIGNUP,
-        payload: user
+export function userSignup(email:string, password:string) {
+    return async (dispatch:any) => {
+        const response = await auth.createUserWithEmailAndPassword(email, password)
+        dispatch({type: SET_USER, payload: JSON.parse(JSON.stringify(response.user))})
     }
 }
 
-export function userLogout():UserLogoutActionType {
+export function userLogout() {
+    return async (dispatch:any) => {
+        await auth.signOut()
+        dispatch({type: USER_LOGOUT})
+    }
+}
+
+export function setUser(user:object|null) {
+    console.log("user in setUser",user)
     return {
-        type: USER_LOGOUT
+        type: SET_USER,
+        payload: user
     }
 }

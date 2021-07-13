@@ -1,6 +1,7 @@
-import React , { useState, useEffect } from 'react';
+import React , { useState } from 'react';
 import styled from 'styled-components'
 import { useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 import {TextField, Button} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -9,7 +10,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import InputPassword from './InputPassword'
 import SimpleSnackbar from './SnackBar'
 
-import { useAuth } from "../context/AuthContext"
+// import { useAuth } from "../context/AuthContext"
+import { userLogin, userSignup } from '../redux/actions';
 
 const Field = styled.div`
   width: 487px;
@@ -73,8 +75,10 @@ const LogSignField: React.FC<Props> = (props) => {
 
     const classes = useStyles();
     const history = useHistory()
+    const dispatch = useDispatch()
 
-    const { signup, login } = useAuth()
+    // console.log(useAuth())
+    // const { signup, login } = useAuth()
 
     const [form, setForm] = useState<FormType>({
         email: '', password: ''
@@ -83,7 +87,6 @@ const LogSignField: React.FC<Props> = (props) => {
     const [openTip, setOpenTip] = useState<String>("") //окошко с подсказкой
     const [loading, setLoading] = useState(false)
     const [errMessage, setErrMessage] = React.useState<String>("") //сообщение с сервера
-
 
     const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => { //записать данные из формы 
         setForm({...form, [event.target.name]: event.target.value})
@@ -118,7 +121,7 @@ const LogSignField: React.FC<Props> = (props) => {
 
       if (props.mode==="SignUp") {
         try {
-          await signup(form.email, form.password)
+          await dispatch(userSignup(form.email, form.password))
           history.push('/cabinet')
 
         } catch (error) {
@@ -138,7 +141,8 @@ const LogSignField: React.FC<Props> = (props) => {
 
       if (props.mode==="LogIn") {
         try {
-          await login(form.email, form.password)
+          // await login(form.email, form.password)
+          await dispatch(userLogin(form.email, form.password))
           history.push('/cabinet')
 
         } catch (error) {

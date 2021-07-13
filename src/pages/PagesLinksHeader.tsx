@@ -1,15 +1,17 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
-// import {connect} from 'react-redux';
-// import { AppStateType } from '../redux/rootReducer';
+import {connect} from 'react-redux';
+import { AppStateType } from '../redux/rootReducer';
 
 import { makeStyles } from '@material-ui/core/styles';
 import {InputBase, IconButton, Paper, Container} from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 
 import HeaderLink from '../components/HeaderLink'
-import { useAuth } from "../context/AuthContext"
+// import { useAuth } from "../context/AuthContext"
+import { auth } from "../firebase"
+import { setUser } from '../redux/actions';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -67,8 +69,21 @@ const FlexedContainer = styled.div`
   justify-content: space-between;
 `;
 
-const PagesLinksHeader: React.FC = () => {
-  const { currentUser } = useAuth()
+auth.onAuthStateChanged(user => {
+  console.log("user in onAuthStateChanged",JSON.parse(JSON.stringify(user)))
+  setUser(JSON.parse(JSON.stringify(user)))
+})
+
+const PagesLinksHeader: React.FC<any> = ({userData}) => {
+  // const { currentUser } = useAuth()
+//   useEffect(() => {
+//     console.log("useEffect")
+//     const unsubscribe = auth.onAuthStateChanged(user => {
+//       console.log("user in useEffect",JSON.parse(JSON.stringify(user)))
+//       setUser(JSON.parse(JSON.stringify(user)))
+//     })
+//     return unsubscribe
+// }, [])
 
   const classes = useStyles();
     return (
@@ -91,7 +106,7 @@ const PagesLinksHeader: React.FC = () => {
             <HeaderLink to="/movies" text='Фильмы' />
             <HeaderLink to="/cinemas" text='Кинотеатры'/>
             <HeaderLink to="/about" text='О нас'/>
-            <HeaderLink to={currentUser?"/cabinet":"/logIn"} text='Личный кабинет'/>
+            <HeaderLink to={userData?"/cabinet":"/logIn"} text='Личный кабинет'/>
 
           </FlexedHeaderLinks>
         </FlexedContainer>
@@ -100,13 +115,18 @@ const PagesLinksHeader: React.FC = () => {
 
 }
 
-// const mapStatetoProps  = (state:AppStateType) => {
-//   return {
-//     userData: state.user.isAuthorized
-//   }
-// }
+const mapStatetoProps  = (state:AppStateType) => {
+  console.log("state in header", state.user.userObj)
+  return {
+    userData: state.user.userObj
+  }
+}
+
+const mapDispatchToProps = {
+  setUser
+}
     
-// export default connect(mapStatetoProps, null)(PagesLinksHeader);
+export default connect(mapStatetoProps, mapDispatchToProps)(PagesLinksHeader);
     
-export default PagesLinksHeader;
+// export default PagesLinksHeader;
     

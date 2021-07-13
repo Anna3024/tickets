@@ -1,31 +1,29 @@
-import {USER_LOGIN, USER_SIGNUP, USER_LOGOUT} from './types'
-import {UserLoginActionType} from './actions'
+import {USER_LOGOUT, SET_USER} from './types'
+import {SetUserActionType} from './actions'
 
-import { auth } from "../firebase"
+// import { auth } from "../firebase"
 
 type InitialStateType = {
-    isAuthorized: boolean,
-    user: object 
+    userObj: object | null
 }
 
 const initialState:InitialStateType = {
-    isAuthorized: true,
-    user: (function () {
-        return auth.onAuthStateChanged(user => {
-            console.log("user",user)
-            return JSON.parse(JSON.stringify(user))
-        })
-    })()
+    userObj: null
 }
 
-export const userReduser = (state = initialState, action:UserLoginActionType):InitialStateType => {
+export const userReduser = (state = initialState, action:SetUserActionType):InitialStateType => {
+
     switch (action.type) {
-        case USER_LOGIN: {
-            return {...state, isAuthorized: true}
-        }
+
         case USER_LOGOUT: {
-            return {...state, isAuthorized: false}
+            return {...state, userObj: null}
         }
+
+        case SET_USER: {
+            console.log('user in userReducer', action.payload)
+            return {...state, userObj: action.payload}
+        }
+
         default: return state
     }
 }

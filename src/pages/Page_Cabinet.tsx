@@ -1,11 +1,16 @@
 import React from 'react';
 import styled from 'styled-components'
-import { useHistory , Redirect} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
+import { useDispatch, connect } from 'react-redux';
+import { compose } from 'redux';
 
 import {Container, Button} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { useAuth } from "../context/AuthContext"
+import { AppStateType } from '../redux/rootReducer';
+import { userLogout } from '../redux/actions';
+import { withAuthRedirect } from '../hoc/withAuthRedirect';
+
 
 const StyledBtn = styled(Button)`
   display: block;
@@ -21,34 +26,27 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Page_Cabinet: React.FC = () => {  
+const Page_Cabinet: React.FC<any> = ({userData}) => { 
 
   const classes = useStyles();
-  const { currentUser, logout } = useAuth()
   const history = useHistory()
-
-  console.log(JSON.parse(JSON.stringify(currentUser)))
+  const dispatch = useDispatch() 
 
   const logOutHandler = async () => {
     try {
-      await logout()
+      dispatch(userLogout())
       history.push('/logIn')
 
     } catch (error) {
       console.log('Ошибка при выходе из аккаунта')
     }
-   
   }
-
-  if (!currentUser) {
-    return <Redirect to='/'/>
-  }
-
+  
   return (
     <Container maxWidth="xl">
-      Привет, ID:  {currentUser.uid}
+      Привет, ID:  {userData.uid}
       <br/>
-      email: {currentUser.email}
+      email: {userData.email}
       <StyledBtn 
           variant="outlined" 
           className={classes.btn}
@@ -59,6 +57,19 @@ const Page_Cabinet: React.FC = () => {
       </StyledBtn>
     </Container>
   )
-
 }
-export default Page_Cabinet;
+
+const mapStatetoProps  = (state:AppStateType) => {
+  return {
+    userData: state.user.userObj
+  }
+}
+
+// export default compose(
+//   connect(mapStatetoProps, null),
+//   withAuthRedirect
+// )(Page_Cabinet)
+
+let AuthRedirectComponent = withAuthRedirect(Page_Cabinet)
+    
+export default connect(mapStatetoProps, null)(AuthRedirectComponent);

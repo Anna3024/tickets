@@ -1,6 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {BrowserRouter} from 'react-router-dom';
+import { createStore, compose, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux';
+import thunk from 'redux-thunk';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './normalize.css';
@@ -11,17 +14,28 @@ import reportWebVitals from './reportWebVitals';
 import PagesRouter from './pages/PagesRouter';
 import PagesLinksHeader from './pages/PagesLinksHeader';
 import PagesLinksFooter from './pages/PagesLinksFooter';
+import { rootReducer } from './redux/rootReducer';
 
-import { AuthProvider } from "./context/AuthContext"
+// import AuthProvider from "./context/AuthContext"
+
+const store = createStore(rootReducer, compose(
+  applyMiddleware(
+    thunk
+  ),
+  //@ts-ignore
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+))
 
 ReactDOM.render(
-    <AuthProvider>
+  <Provider store = {store}>
+    {/* <AuthProvider> */}
       <BrowserRouter>
         <PagesLinksHeader />
         <PagesRouter />
         <PagesLinksFooter />
       </BrowserRouter>
-    </AuthProvider>
+    {/* </AuthProvider> */}
+  </Provider>
   ,
   document.getElementById('root')
 );
