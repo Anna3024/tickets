@@ -9,6 +9,7 @@ import Page_Movie from './Page_Movie';
 import Page_About from './Page_About';
 import Page_LogIn from './Page_LogIn';
 import Page_Cabinet from './Page_Cabinet';
+import Page_404 from './Page_404';
 
 const PagesRouter: React.FC = () => {
 
@@ -21,8 +22,9 @@ const PagesRouter: React.FC = () => {
         <Route path="/movies/:movieId" component={Page_Movie} />
         <Route path="/about" component={Page_About} />
         <Route path="/logIn" component={Page_LogIn} />
-        <Route path="/cabinet" component={Page_Cabinet} />
-        <Redirect to='/'/>
+        <Route path="/cabinet" component={Page_Cabinet}/>
+        <Route path="/404" component={Page_404} />
+        <Redirect to='/404'/>
       </Switch>
     );
 }

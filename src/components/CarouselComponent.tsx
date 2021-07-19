@@ -4,6 +4,11 @@ import styled from 'styled-components';
 import Carousel from 'react-bootstrap/Carousel'
 import BtnGetTicket from './BtnGetTicket';
 
+import bgWidow from '../img/image/carousel_widow.jpg'
+import bgDance from '../img/image/carousel_dance.jpg'
+import bgKiller from '../img/image/carousel_killer.jpg'
+import bgSpeed from '../img/image/carousel_speed.png'
+
 // import { NavLink } from 'react-router-dom';
 
 const StyledItem = styled(Carousel.Item)`
@@ -47,7 +52,7 @@ const CarouselComponent :React.FC = () => {
     return (
       <Carousel controls={false}>
         <StyledItem interval={5000} >
-          <StyledDiv style={{backgroundImage: "url(https://6a25bbd04bd33b8a843e-9626a8b6c7858057941524bfdad5f5b0.ssl.cf5.rackcdn.com/styles/movie_2520x1460/rcf/movies/main/BLKW019DOM_IMAX_com_Movie_Page_2520x1460_ENG_V4_R1.jpg?itok=yAJokby6)"}}/>
+          <StyledDiv style={{backgroundImage: `url(${bgWidow})`}}/>
           <Carousel.Caption>
             <p>БОЕВИК, ФАНТАСТИКА, ПРИКЛЮЧЕНИЯ, 18+</p>
             <h2 className="display-4">ЧЁРНАЯ ВДОВА</h2>
@@ -56,7 +61,7 @@ const CarouselComponent :React.FC = () => {
         </StyledItem>
 
         <StyledItem interval={5000}>
-          <StyledDiv style={{backgroundImage: "url(https://6a25bbd04bd33b8a843e-9626a8b6c7858057941524bfdad5f5b0.ssl.cf5.rackcdn.com/styles/movie_2520x1460/rcf/movies/main/F92_2520x1460.png?itok=GzAitl49)"}}/>
+          <StyledDiv style={{backgroundImage: `url(${bgSpeed})`}}/>
           <Carousel.Caption>
             <p>БОЕВИК, ТРИЛЛЕР, КРИМИНАЛ, ПРИКЛЮЧЕНИЯ, 12+</p>
             <h2 className="display-4">ФОРСАЖ 9</h2>
@@ -65,7 +70,7 @@ const CarouselComponent :React.FC = () => {
         </StyledItem>
 
         <StyledItem interval={5000}>
-          <StyledDiv style={{backgroundImage: "url(https://6a25bbd04bd33b8a843e-9626a8b6c7858057941524bfdad5f5b0.ssl.cf5.rackcdn.com/styles/movie_2520x1460/rcf/movies/main/THWB001DOM_IMAX_com_Movie_Page_2520x1460_V2_R1_3.jpg?itok=jYAIkSL-)"}}/>
+          <StyledDiv style={{backgroundImage: `url(${bgKiller})`}}/>
           <Carousel.Caption>
             <p>КОМЕДИЯ, БОЕВИК, 18+</p>
             <h2 className="display-4">ТЕЛОХРАНИТЕЛЬ ЖЕНЫ КИЛЛЕРА</h2>
@@ -74,7 +79,7 @@ const CarouselComponent :React.FC = () => {
         </StyledItem>
 
         <StyledItem interval={5000}>
-          <StyledDiv style={{backgroundImage: "url(https://6a25bbd04bd33b8a843e-9626a8b6c7858057941524bfdad5f5b0.ssl.cf5.rackcdn.com/styles/movie_2520x1460/rcf/movies/main/ITHG001DOM_IMAX_com_Movie_Page_2520x1460_textless_V1_R1_1.jpg?itok=RppyhtYY)"}}/>
+          <StyledDiv style={{backgroundImage: `url(${bgDance})`}}/>
           <Carousel.Caption>
             <p>МЮЗИКЛ, ДРАМА, МЕЛОДРАМА, 12+</p>
             <h2 className="display-4">НА ВЫСОТЕ МЕЧТЫ</h2>

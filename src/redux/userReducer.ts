@@ -8,7 +8,13 @@ type InitialStateType = {
 }
 
 const initialState:InitialStateType = {
-    userObj: null
+    userObj:  (function () {
+        const userJSON = localStorage.getItem('moviegoer')
+        if (userJSON !== null) {
+            return JSON.parse(userJSON).user
+        }
+        return null
+    }) ()
 }
 
 export const userReduser = (state = initialState, action:SetUserActionType):InitialStateType => {
@@ -16,11 +22,12 @@ export const userReduser = (state = initialState, action:SetUserActionType):Init
     switch (action.type) {
 
         case USER_LOGOUT: {
+            localStorage.removeItem("moviegoer")
             return {...state, userObj: null}
         }
 
         case SET_USER: {
-            console.log('user in userReducer', action.payload)
+            localStorage.setItem("moviegoer", JSON.stringify({"user": action.payload}))
             return {...state, userObj: action.payload}
         }
 

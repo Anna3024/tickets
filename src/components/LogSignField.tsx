@@ -9,8 +9,8 @@ import { makeStyles } from '@material-ui/core/styles';
 // import { useHttp } from '../hooks/http.hook';
 import InputPassword from './InputPassword'
 import SimpleSnackbar from './SnackBar'
+import OpenTip from './OpenTip';
 
-// import { useAuth } from "../context/AuthContext"
 import { userLogin, userSignup } from '../redux/actions';
 
 const Field = styled.div`
@@ -45,15 +45,6 @@ const useStyles = makeStyles((theme) => ({
       borderColor: "black",
       borderRadius: 0
     },
-    dropdown: {
-      position: 'absolute',
-      bottom: 28,
-      right: 0,
-      left: 0,
-      zIndex: 1,
-      backgroundColor: 'transparent',
-      textAlign: 'center'
-    },
     margin: {
       margin: theme.spacing(1),
     },
@@ -77,14 +68,11 @@ const LogSignField: React.FC<Props> = (props) => {
     const history = useHistory()
     const dispatch = useDispatch()
 
-    // console.log(useAuth())
-    // const { signup, login } = useAuth()
-
     const [form, setForm] = useState<FormType>({
         email: '', password: ''
     })
     const [confirmPassword, setConfirmPassword] = useState<String>('')//повторить пароль
-    const [openTip, setOpenTip] = useState<String>("") //окошко с подсказкой
+    const [openTip, setOpenTip] = useState<string>("") //окошко с подсказкой
     const [loading, setLoading] = useState(false)
     const [errMessage, setErrMessage] = React.useState<String>("") //сообщение с сервера
 
@@ -126,6 +114,9 @@ const LogSignField: React.FC<Props> = (props) => {
 
         } catch (error) {
           switch (error.code) {
+            case "auth/network-request-failed":
+              setOpenTip('Ошибка соединения')
+            break;
             case "auth/email-already-in-use":
               setErrMessage('Пользователь с таким email уже зарегестрирован')
               break;
@@ -141,13 +132,15 @@ const LogSignField: React.FC<Props> = (props) => {
 
       if (props.mode==="LogIn") {
         try {
-          // await login(form.email, form.password)
           await dispatch(userLogin(form.email, form.password))
           history.push('/cabinet')
 
         } catch (error) {
           console.log(error)
           switch (error.code) {
+            case "auth/network-request-failed":
+              setOpenTip('Ошибка соединения')
+            break;
             case "auth/wrong-password":
               setErrMessage('Неверный пароль')
               break;
@@ -192,7 +185,7 @@ const LogSignField: React.FC<Props> = (props) => {
           disabled={loading}>
           {props.mode==="LogIn"?'ВОЙТИ':'ЗАВЕРШИТЬ РЕГИСТРАЦИЮ'}
         </StyledBtn>
-        {openTip ?  <div className={classes.dropdown}>{openTip}</div> : null}
+        {openTip ?  <OpenTip text={openTip}/> : null}
         {errMessage && (<SimpleSnackbar text = {errMessage}/>)}
       </Field>
     )

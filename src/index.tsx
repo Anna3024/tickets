@@ -16,8 +16,6 @@ import PagesLinksHeader from './pages/PagesLinksHeader';
 import PagesLinksFooter from './pages/PagesLinksFooter';
 import { rootReducer } from './redux/rootReducer';
 
-// import AuthProvider from "./context/AuthContext"
-
 const store = createStore(rootReducer, compose(
   applyMiddleware(
     thunk
@@ -28,13 +26,11 @@ const store = createStore(rootReducer, compose(
 
 ReactDOM.render(
   <Provider store = {store}>
-    {/* <AuthProvider> */}
       <BrowserRouter>
         <PagesLinksHeader />
         <PagesRouter />
         <PagesLinksFooter />
       </BrowserRouter>
-    {/* </AuthProvider> */}
   </Provider>
   ,
   document.getElementById('root')

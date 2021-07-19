@@ -31,7 +31,7 @@ const InputPassword: React.FC<Props> = (props) => {
 
     return (
         <FormControl className={classes.input}>
-          <InputLabel htmlFor={`${props.mode}_password${props.confirm && '_conf'}`}>Password</InputLabel>
+          <InputLabel htmlFor={`${props.mode}_password${props.confirm && '_conf'}`}>Пароль</InputLabel>
           <Input
             id={`${props.mode}_password${props.confirm ? '_conf':''}`}
             type={showPassword ? 'text' : 'password'}

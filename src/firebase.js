@@ -12,5 +12,7 @@ const app = firebase.initializeApp({
     measurementId: "G-C2ZL03JZ7L"
 })
 
+// firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE);
+
 export const auth = app.auth()
 export default app
