@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie'
 import { USER_LOGOUT, SET_USER} from "./types";
 
-import { auth } from "../firebase"
+import { auth, database } from "../firebase"
 
 export type UserLogoutActionType = {
     type: typeof USER_LOGOUT,
@@ -14,19 +14,16 @@ export type SetUserActionType = {
 
 export function userLogin(email:string, password:string) {
     return async (dispatch:any) => {
-        // await auth.signInWithEmailAndPassword(email, password)
+        // const result = await auth.signInWithEmailAndPassword(email, password)
         // .then(({user}) => {
         //     if (user!==null) {
         //         return user.getIdToken().then((idToken)=>{
-        //             console.log(idToken)
         //             return fetch('http://localhost:5000/register', {
-        //                 mode: 'no-cors',
         //                 method:'POST',
-        //                 //@ts-ignore
+                        
         //                 headers: {
         //                     Accept: "application/json",
         //                     "Content-Type": "application/json",
-        //                     "CSRF-Token": Cookies.get("XSRF-TOKEN")
         //                 },
         //                 body: JSON.stringify({ idToken })
         //             })
@@ -38,7 +35,7 @@ export function userLogin(email:string, password:string) {
         //     return auth.signOut();
         // })
         const response = await auth.signInWithEmailAndPassword(email, password)
-        console.log(auth.currentUser)
+        // console.log(auth.currentUser?.getIdToken())
         dispatch({type: SET_USER, payload: JSON.parse(JSON.stringify(response.user))})
     }
 }
@@ -46,6 +43,16 @@ export function userLogin(email:string, password:string) {
 export function userSignup(email:string, password:string) {
     return async (dispatch:any) => {
         const response = await auth.createUserWithEmailAndPassword(email, password)
+        database.users.add({
+            id: response.user?.uid,
+            name: '',
+            phone: '',
+            birthday:'',
+            email: email,
+            gender: 'none',
+            role: 'user',
+        })
+        console.log(response)
         dispatch({type: SET_USER, payload: JSON.parse(JSON.stringify(response.user))})
     }
 }
