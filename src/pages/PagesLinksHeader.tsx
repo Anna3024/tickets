@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import { AppStateType } from '../redux/rootReducer';
 
 import { makeStyles } from '@material-ui/core/styles';

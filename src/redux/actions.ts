@@ -1,5 +1,5 @@
-import Cookies from 'js-cookie'
-import { USER_LOGOUT, SET_USER} from "./types";
+// import Cookies from 'js-cookie'
+import { USER_LOGOUT, SET_USER, SET_USER_ROLE, ADD_USER_INFO} from "./types";
 
 import { auth, database } from "../firebase"
 
@@ -9,41 +9,33 @@ export type UserLogoutActionType = {
 
 export type SetUserActionType = {
     type: typeof SET_USER,
-    payload: object | null
+    payload: any
 }
 
 export function userLogin(email:string, password:string) {
     return async (dispatch:any) => {
-        // const result = await auth.signInWithEmailAndPassword(email, password)
-        // .then(({user}) => {
-        //     if (user!==null) {
-        //         return user.getIdToken().then((idToken)=>{
-        //             return fetch('http://localhost:5000/register', {
-        //                 method:'POST',
-                        
-        //                 headers: {
-        //                     Accept: "application/json",
-        //                     "Content-Type": "application/json",
-        //                 },
-        //                 body: JSON.stringify({ idToken })
-        //             })
-        //         })
-        //     }
-            
-        // })
-        // .then(() => {
-        //     return auth.signOut();
-        // })
         const response = await auth.signInWithEmailAndPassword(email, password)
-        // console.log(auth.currentUser?.getIdToken())
-        dispatch({type: SET_USER, payload: JSON.parse(JSON.stringify(response.user))})
+        await database.users.doc(response.user?.uid).get()
+        .then((doc) => {
+            if (doc.exists) {
+                dispatch({type: SET_USER_ROLE, payload: {
+                    user:  JSON.parse(JSON.stringify(response.user)), 
+                    isAdmin: doc.data()?.role==='admin',
+                    userInfo: doc.data()
+                }})
+            } else {
+                dispatch({type: SET_USER, payload: JSON.parse(JSON.stringify(response.user))})
+            }
+        }).catch((error) => {
+            console.log("Error getting document:", error);
+        });
     }
 }
 
 export function userSignup(email:string, password:string) {
     return async (dispatch:any) => {
         const response = await auth.createUserWithEmailAndPassword(email, password)
-        database.users.add({
+        database.users.doc(response.user?.uid).set({
             id: response.user?.uid,
             name: '',
             phone: '',
@@ -52,7 +44,6 @@ export function userSignup(email:string, password:string) {
             gender: 'none',
             role: 'user',
         })
-        console.log(response)
         dispatch({type: SET_USER, payload: JSON.parse(JSON.stringify(response.user))})
     }
 }
@@ -60,10 +51,14 @@ export function userSignup(email:string, password:string) {
 export function addUserInfo(userInfo:any) {
     return async function (dispatch:any) {
         const current = auth.currentUser
-        await current?.updateProfile({
-            displayName: userInfo.surname + " " + userInfo.name
-        })
-        dispatch({type: SET_USER, payload: JSON.parse(JSON.stringify(current))})
+        let addedInfo = {
+            name: userInfo.surname + "/" + userInfo.name,
+            phone: userInfo.phone,
+            birthday: userInfo.birthday,
+            gender: userInfo.gender,
+        }
+        database.users.doc(current?.uid).update(addedInfo)
+        dispatch({type: ADD_USER_INFO, payload: addedInfo})
     }
 }
 
@@ -71,6 +66,7 @@ export function apdateEmail(email:string) {
     return async function (dispatch:any) {
         const current = auth.currentUser
         await current?.updateEmail(email)
+        database.users.doc(current?.uid).update({email})
         dispatch({type: SET_USER, payload: JSON.parse(JSON.stringify(current))})
     }
 }
@@ -90,9 +86,30 @@ export function userLogout() {
     }
 }
 
-export function setUser(user:object|null) {
-    return {
-        type: SET_USER,
-        payload: user
+export function setUser(user:any) {
+    return async (dispatch:any) => {
+        await database.users.doc(user?.uid).get()
+        .then((doc) => {
+            if (doc.exists) {
+                dispatch({type: SET_USER_ROLE, payload: {
+                    user, 
+                    isAdmin: doc.data()?.role==='admin',
+                    userInfo: doc.data()
+                }})
+            } else {
+                dispatch({type: SET_USER, payload: JSON.parse(JSON.stringify(user))})
+            }
+
+
+                // console.log("user role:", doc.data()?.role);
+                // if (doc.data()?.role==='admin') {
+                //     dispatch({type: SET_USER_ROLE, payload: {user, isAdmin: true}})
+                // } else {
+                //     dispatch({type: SET_USER_ROLE, payload: {user, isAdmin: false}})
+                // }
+            // } 
+        }).catch((error) => {
+            console.log("Error getting document:", error);
+        });
     }
 }

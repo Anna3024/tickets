@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
-import { useDispatch } from 'react-redux';
+import { useDispatch, connect } from 'react-redux';
 
 import { makeStyles } from '@material-ui/core/styles';
 import {TextField, FormControl, InputLabel, Select, MenuItem, Typography} from '@material-ui/core';
@@ -8,7 +8,10 @@ import {TextField, FormControl, InputLabel, Select, MenuItem, Typography} from '
 import OpenTip from './OpenTip';
 import BtnMain from './BtnMain';
 
+import { AppStateType } from '../redux/rootReducer';
 import { addUserInfo } from '../redux/actions';
+
+// import { database } from "../firebase"
 
 const StyledDiv = styled.div`
     padding-bottom: 70px;
@@ -38,24 +41,39 @@ const useStyles = makeStyles((theme) => ({
         borderColor: "black",
         borderRadius: 0
     }
-  }));
+}));
 
 
-const Profile:React.FC = () => {
+const Profile:React.FC<any> = ({userInfo}) => {
 
     const classes = useStyles();
     const dispatch = useDispatch()
 
     const [form, setForm] = useState<FormType>({
-        surname: '', 
-        name: '',
+        surname: "", 
+        name: "",
         gender: 'none',
-        birthday: null,
-        phone: ''
+        birthday: "",
+        phone: ""
     })
     const [openTip, setOpenTip] = useState<string>("") //окошко с подсказкой
+
+    useEffect(()=>{
+
+        if (userInfo!=null && userInfo.name && userInfo.birthday  && userInfo.phone) {
+            setForm({
+                surname: userInfo.name.split('/')[0], 
+                name: userInfo.name.split('/')[1],
+                gender: userInfo.gender,
+                birthday: userInfo.birthday,
+                phone: userInfo.phone
+            })
+        }
+            
+    },[])
     
     const handleDateChange = (event: React.ChangeEvent<any>) => {
+        console.log(event.target.value)
         setForm({...form, birthday: event.target.value})
         setOpenTip("") //закрыть всплывающее окно
     };
@@ -67,6 +85,7 @@ const Profile:React.FC = () => {
 
     const changeHandlerInputField = (event: React.ChangeEvent<HTMLInputElement>) => { 
         setForm({...form, [event.target.name]: event.target.value})
+        console.log(form)
         setOpenTip("") //закрыть всплывающее окно
     }
 
@@ -101,10 +120,11 @@ const Profile:React.FC = () => {
             return
         }
 
-        console.log(form.phone.slice(1).split(/[-]?[(]?[)]?[(\s+)]?/).join(""))
+        form.phone.slice(1).split(/[-]?[(]?[)]?[(\s+)]?/).join("")
 
         try {
             await dispatch(addUserInfo(form))
+            setOpenTip('Изменения сохранены')
 
         } catch (error) {
             switch (error.code) {
@@ -127,6 +147,7 @@ const Profile:React.FC = () => {
                 className={classes.input}  
                 label="Фамилия"
                 name="surname" 
+                value = {form.surname}
                 onChange={changeHandlerInputField}
             />
 
@@ -134,6 +155,7 @@ const Profile:React.FC = () => {
                 className={classes.input}  
                 label="Имя"
                 name="name" 
+                value = {form.name}
                 onChange={changeHandlerInputField}
             />
             <div className='row justify-content-between px-3 g-3'>
@@ -152,9 +174,10 @@ const Profile:React.FC = () => {
 
                 <TextField
                     name="birthday"
-                    label="День рождения"
+                    label="Дата рождения"
                     type="date"
                     className={classes.textField}
+                    value={form.birthday}
                     onChange={handleDateChange}
                     InputLabelProps={{
                         shrink: true,
@@ -165,6 +188,7 @@ const Profile:React.FC = () => {
                 className={classes.input}  
                 label="Мобильный телефон"
                 name="phone" 
+                value = {form.phone}
                 onChange={changeHandlerInputField}
             />
             <BtnMain text='СОХРАНИТЬ ИЗМЕНЕНИЯ' cbHendler={saveProfileHandler}/>
@@ -174,4 +198,9 @@ const Profile:React.FC = () => {
     )   
 }
 
-export default Profile
+const mapStatetoProps  = (state:AppStateType) => {
+    return {
+      userInfo: state.user.userInfo
+    }
+}
+export default connect(mapStatetoProps, null)(Profile);

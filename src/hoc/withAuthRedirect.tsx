@@ -1,5 +1,6 @@
 import { Redirect } from 'react-router-dom';
 import {connect} from 'react-redux';
+
 import { AppStateType } from '../redux/rootReducer';
 
 export const withAuthRedirect = (Component:any) => {

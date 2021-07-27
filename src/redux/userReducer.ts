@@ -1,20 +1,16 @@
-import {USER_LOGOUT, SET_USER} from './types'
+import {USER_LOGOUT, SET_USER, SET_USER_ROLE, ADD_USER_INFO} from './types'
 import {SetUserActionType} from './actions'
 
-// import { auth } from "../firebase"
-
 type InitialStateType = {
-    userObj: object | null
+    userObj: object | null,
+    isAdmin: boolean,
+    userInfo: object | null
 }
 
 const initialState:InitialStateType = {
-    userObj:  (function () {
-        const userJSON = localStorage.getItem('moviegoer')
-        if (userJSON !== null) {
-            return JSON.parse(userJSON).user
-        }
-        return null
-    }) ()
+    userObj: null,
+    isAdmin: false,
+    userInfo: null
 }
 
 export const userReduser = (state = initialState, action:SetUserActionType):InitialStateType => {
@@ -22,13 +18,19 @@ export const userReduser = (state = initialState, action:SetUserActionType):Init
     switch (action.type) {
 
         case USER_LOGOUT: {
-            localStorage.removeItem("moviegoer")
-            return {...state, userObj: null}
+            return {...state, userObj: null, isAdmin: false, userInfo: null}
         }
 
         case SET_USER: {
-            localStorage.setItem("moviegoer", JSON.stringify({"user": action.payload}))
             return {...state, userObj: action.payload}
+        }
+
+        case SET_USER_ROLE: {
+            return {...state, isAdmin: action.payload.isAdmin, userObj: action.payload.user, userInfo: action.payload.userInfo}
+        }
+
+        case ADD_USER_INFO: {
+            return {...state, userInfo: action.payload.addedInfo}
         }
 
         default: return state

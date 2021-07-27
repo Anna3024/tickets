@@ -13,11 +13,14 @@ const app = firebase.initializeApp({
     measurementId: "G-C2ZL03JZ7L"
 })
 
+// firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+
 const firestore = app.firestore()
 
 export const database = {
     users: firestore.collection('users'),
-    movies: firestore.collection('movies')
+    movies: firestore.collection('movies'),
+    getCurrentTimestap: firebase.firestore.FieldValue.serverTimestamp
 }
 export const auth = app.auth()
 

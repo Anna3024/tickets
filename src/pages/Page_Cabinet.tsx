@@ -15,6 +15,7 @@ import Profile from '../components/Profile'
 import BtnMain from '../components/BtnMain'
 import ChangeEmailField from '../components/ChangeEmailField';
 import ChangePasswordField from '../components/ChangePasswordField';
+import AdminBtns from '../components/AdminBtns'
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -63,7 +64,7 @@ function a11yProps(index: any) {
     'aria-controls': `full-width-tabpanel-${index}`,
   };
 }
-const Page_Cabinet: React.FC<any> = ({userData}) => { 
+const Page_Cabinet: React.FC<any> = ({isAdmin}) => { 
   
   const classes = useStyles();
   const history = useHistory()
@@ -92,42 +93,42 @@ const Page_Cabinet: React.FC<any> = ({userData}) => {
   
   return (
     <Container maxWidth="xl" className={classes.container}>
-      ID:  {userData.uid}
-        <AppBar position="static" className={classes.appBar}>
-          <Tabs
-            className={classes.tabs}
-            value={value}
-            onChange={handleChange}
-            indicatorColor="primary"
-            variant="fullWidth"
-          >
-            <Tab label="ПРОФИЛЬ" {...a11yProps(0)} />
-            <Tab label="БИЛЕТЫ" {...a11yProps(1)} />
-          </Tabs>
-        </AppBar>
-
-        <SwipeableViews
-          axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-          index={value}
-          onChangeIndex={handleChangeIndex}
+      {isAdmin && <AdminBtns/>}
+      <AppBar position="static" className={classes.appBar}>
+        <Tabs
+          className={classes.tabs}
+          value={value}
+          onChange={handleChange}
+          indicatorColor="primary"
+          variant="fullWidth"
         >
-          <TabPanel value={value} index={0} dir={theme.direction}>
-            <Typography variant="h3" gutterBottom>Настройки профиля</Typography>
-            <Profile />
-            <ChangeEmailField/>
-            <ChangePasswordField/>
-          </TabPanel>
-          <TabPanel value={value} index={1} dir={theme.direction}>
-            <Typography variant="h3" gutterBottom>История покупки билетов</Typography>
-            <Typography variant="h4" gutterBottom>Мои билеты</Typography>
-            <Paper square className="p-3">
-              Здесь будут отображаться купленные билеты. 
-              <NavLink to="/movies"> Выбрать фильм</NavLink>
-            </Paper>
-          </TabPanel>
-        </SwipeableViews>
+          <Tab label="ПРОФИЛЬ" {...a11yProps(0)} />
+          <Tab label="БИЛЕТЫ" {...a11yProps(1)} />
+        </Tabs>
+      </AppBar>
 
-        <BtnMain text="ВЫЙТИ ИЗ ПРОФИЛЯ" cbHendler={logOutHandler} />
+      <SwipeableViews
+        axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+        index={value}
+        onChangeIndex={handleChangeIndex}
+      >
+        <TabPanel value={value} index={0} dir={theme.direction}>
+          <Typography variant="h3" gutterBottom>Настройки профиля</Typography>
+          <Profile />
+          <ChangeEmailField/>
+          <ChangePasswordField/>
+        </TabPanel>
+        <TabPanel value={value} index={1} dir={theme.direction}>
+          <Typography variant="h3" gutterBottom>История покупки билетов</Typography>
+          <Typography variant="h4" gutterBottom>Мои билеты</Typography>
+          <Paper square className="p-3">
+            Здесь будут отображаться купленные билеты. 
+            <NavLink to="/movies"> Выбрать фильм</NavLink>
+          </Paper>
+        </TabPanel>
+      </SwipeableViews>
+
+      <BtnMain text="ВЫЙТИ ИЗ ПРОФИЛЯ" cbHendler={logOutHandler} />
 
     </Container>
   )
@@ -135,7 +136,8 @@ const Page_Cabinet: React.FC<any> = ({userData}) => {
 
 const mapStatetoProps  = (state:AppStateType) => {
   return {
-    userData: state.user.userObj
+    // userData: state.user.userObj,
+    isAdmin: state.user.isAdmin
   }
 }
 
@@ -143,7 +145,3 @@ export default compose<any>(
   connect(mapStatetoProps, null),
   withAuthRedirect
 )(Page_Cabinet)
-
-// let AuthRedirectComponent = withAuthRedirect(Page_Cabinet)
-    
-// export default connect(mapStatetoProps, null)(AuthRedirectComponent);

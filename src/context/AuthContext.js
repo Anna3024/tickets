@@ -1,36 +1,39 @@
-// import React, { useContext, useState, useEffect } from "react"
-// import { auth } from "../firebase"
-// // import { connect } from "react-redux"
-// import {setUser} from "../redux/actions"
+import React, { useContext, useState, useEffect } from "react"
+import { auth } from "../firebase"
+import { useDispatch } from "react-redux"
+import {setUser} from "../redux/actions"
 
-// const AuthContext = React.createContext()
+const AuthContext = React.createContext()
 
-// export function useAuth() {
-//     return useContext(AuthContext)
-// }
+export function useAuth() {
+    return useContext(AuthContext)
+}
 
-// const AuthProvider = ({ children }) => {
-//   const [currentUser, setCurrentUser] = useState()
-//   const [loading, setLoading] = useState(true)
+const AuthProvider = ({ children }) => {
+  const [currentUser, setCurrentUser] = useState()
+  const [loading, setLoading] = useState(true)
 
-//   useEffect(() => {
-//       const unsubscribe = auth.onAuthStateChanged(user => {
-//         setCurrentUser(user)
-//         setLoading(false)
-//       })
-//       return unsubscribe
-//   }, [])
+  const dispatch = useDispatch()
 
-//   const value = {
-//       currentUser
-//     }
+  useEffect(() => {
+      const unsubscribe = auth.onAuthStateChanged(user => {
+        setCurrentUser(user)
+        dispatch(setUser(user))
+        
+        setLoading(false)
+      })
+      return unsubscribe
+  }, [])
 
-//   return (
-//       <AuthContext.Provider >
-//         {!loading && children}
-//       </AuthContext.Provider>
-//     )
-// }
+  const value = {
+      currentUser
+    }
 
-// export default AuthProvider
-// export default connect(null, {setUser})(AuthProvider) 
+  return (
+      <AuthContext.Provider value={value}>
+        {!loading && children}
+      </AuthContext.Provider>
+    )
+}
+
+export default AuthProvider

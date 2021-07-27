@@ -11,6 +11,7 @@ import './styles/main.css';
 
 import reportWebVitals from './reportWebVitals';
 
+import AuthProvider from './context/AuthContext'
 import PagesRouter from './pages/PagesRouter';
 import PagesLinksHeader from './pages/PagesLinksHeader';
 import PagesLinksFooter from './pages/PagesLinksFooter';
@@ -25,13 +26,17 @@ const store = createStore(rootReducer, compose(
 ))
 
 ReactDOM.render(
-  <Provider store = {store}>
-      <BrowserRouter>
-        <PagesLinksHeader />
-        <PagesRouter />
-        <PagesLinksFooter />
-      </BrowserRouter>
-  </Provider>
+  
+    <Provider store = {store}>
+      <AuthProvider>
+        <BrowserRouter>
+          <PagesLinksHeader />
+          <PagesRouter />
+          <PagesLinksFooter />
+        </BrowserRouter>
+      </AuthProvider>
+    </Provider>
+  
   ,
   document.getElementById('root')
 );

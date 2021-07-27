@@ -45,7 +45,6 @@ const ChangeEmailField: React.FC<any> = ({userData}) => {
             await dispatch(apdateEmail(email))
             setOpenTip('E-mail изменён')
         } catch (error) {
-            console.log(error)
             switch (error.code) {
                 case "auth/network-request-failed":
                     setOpenTip('Ошибка соединения')
@@ -61,6 +60,7 @@ const ChangeEmailField: React.FC<any> = ({userData}) => {
                 break;
                   
                 default:
+                    console.log(error)
                     setOpenTip(error.message)
                 break;
             }
