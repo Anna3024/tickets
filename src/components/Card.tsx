@@ -1,22 +1,25 @@
 import React from 'react';
 import styled from 'styled-components';
 
-// import { NavLink } from 'react-router-dom';
-
 const StyledCard = styled.div`
-    width: 240px;
-    height: 360px;
-    background-color: bisque;
-    border-radius: 22px;
-    margin: 10px;
+    min-width: 240px;
+    min-height: 480px;
+    border: 1px solid black;
     padding: 10px;
+    background-size: cover;
+    background-position: center;
 `
+type Props = {
+    id: string,
+    title: string,
+    image: string
+}
 
-const Card:React.FC = () => {
+const Card:React.FC<Props> = (props) => {
         
     return (
-        <StyledCard >
-            Card
+        <StyledCard style={{backgroundImage: `url(${props.image})`}}>
+            {props.title}
         </StyledCard>
     )
 }

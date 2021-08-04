@@ -6,7 +6,6 @@ import { useDispatch } from 'react-redux';
 import {TextField, Button} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-// import { useHttp } from '../hooks/http.hook';
 import InputPassword from './InputPassword'
 import SimpleSnackbar from './SnackBar'
 import OpenTip from './OpenTip';
@@ -109,7 +108,7 @@ const LogSignField: React.FC<Props> = (props) => {
 
       if (props.mode==="SignUp") {
         try {
-          await dispatch(userSignup(form.email, form.password))
+          await dispatch(userSignup(form.email.toLowerCase(), form.password))
           history.push('/cabinet')
 
         } catch (error) {
@@ -134,7 +133,6 @@ const LogSignField: React.FC<Props> = (props) => {
         try {
           await dispatch(userLogin(form.email, form.password))
           history.push('/cabinet')
-
         } catch (error) {
           console.log(error)
           switch (error.code) {

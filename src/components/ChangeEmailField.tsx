@@ -29,6 +29,7 @@ const ChangeEmailField: React.FC<any> = ({userData}) => {
 
     const [email, setEmail] = useState<string>(userData.email)
     const [openTip, setOpenTip] = useState<string>("")
+    const [loading, setLoading] = useState<boolean>(false)
 
     const changeEmailHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(event.target.value)
@@ -41,8 +42,9 @@ const ChangeEmailField: React.FC<any> = ({userData}) => {
             setOpenTip("Введите email") //открыть всплывающее окно
             return
         }
+        setLoading(true)
         try {
-            await dispatch(apdateEmail(email))
+            await dispatch(apdateEmail(email.toLowerCase()))
             setOpenTip('E-mail изменён')
         } catch (error) {
             switch (error.code) {
@@ -65,6 +67,7 @@ const ChangeEmailField: React.FC<any> = ({userData}) => {
                 break;
             }
         }
+        setLoading(false)
     }
         
     return (
@@ -77,7 +80,7 @@ const ChangeEmailField: React.FC<any> = ({userData}) => {
                 value={email}
                 onChange={changeEmailHandler}
             />
-            <BtnMain text='СОХРАНИТЬ НОВЫЙ E-MAIL' cbHendler={saveEmailHandler}/>
+            <BtnMain text='СОХРАНИТЬ НОВЫЙ E-MAIL' cbHendler={saveEmailHandler} disabled = {loading}/>
             {openTip ?  <OpenTip text={openTip}/> : null}
         </StyledDiv>
     )

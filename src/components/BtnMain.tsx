@@ -11,7 +11,7 @@ const StyledBtn = styled.button`
     display: block;
     margin-right: auto;
     margin-left: auto;
-    margin-top: 75px;
+    margin-top: 55px;
     border: 1px solid transparent;
     transition: background-position .3s linear 0s,color .3s linear 0s, border .3s linear 0s;
     &:hover {
@@ -19,16 +19,23 @@ const StyledBtn = styled.button`
         background-position: 0 100%;
         border: 1px solid black
     }
+    &[disabled] {
+        color: gray;
+        background-position: 0 100%;
+        border: 1px solid gray
+    }
 `;
 
 type PropsType = {
-    text: string,
-    cbHendler?: ()=>void
+    text: string | any,
+    cbHendler?: ()=>void,
+    disabled?: boolean
 }
 
 const BtnMain: React.FC<PropsType> = (props) => {
     return (
         <StyledBtn 
+            disabled = {props.disabled}
             onClick={props.cbHendler}>
             {props.text}
         </StyledBtn>

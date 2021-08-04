@@ -1,4 +1,3 @@
-// import Cookies from 'js-cookie'
 import { USER_LOGOUT, SET_USER, SET_USER_ROLE, ADD_USER_INFO} from "./types";
 
 import { auth, database } from "../firebase"
@@ -12,7 +11,7 @@ export type SetUserActionType = {
     payload: any
 }
 
-export function userLogin(email:string, password:string) {
+export function userLogin(email:string, password:string) { //вход в личный кабинет
     return async (dispatch:any) => {
         const response = await auth.signInWithEmailAndPassword(email, password)
         await database.users.doc(response.user?.uid).get()
@@ -48,7 +47,7 @@ export function userSignup(email:string, password:string) {
     }
 }
 
-export function addUserInfo(userInfo:any) {
+export function addUserInfo(userInfo:any) { //добавить информацию о пользователе
     return async function (dispatch:any) {
         const current = auth.currentUser
         let addedInfo = {
@@ -62,16 +61,17 @@ export function addUserInfo(userInfo:any) {
     }
 }
 
-export function apdateEmail(email:string) {
+export function apdateEmail(email:string) { //сменить Email
     return async function (dispatch:any) {
         const current = auth.currentUser
         await current?.updateEmail(email)
         database.users.doc(current?.uid).update({email})
+        await database.users.doc(current?.uid).update({email})
         dispatch({type: SET_USER, payload: JSON.parse(JSON.stringify(current))})
     }
 }
 
-export function apdatePassword(password:string) {
+export function apdatePassword(password:string) { //сменить пароль
     return async function (dispatch:any) {
         const current = auth.currentUser
         await current?.updatePassword(password)
@@ -79,14 +79,14 @@ export function apdatePassword(password:string) {
     }
 }
 
-export function userLogout() {
+export function userLogout() { //выйти из профиля
     return async (dispatch:any) => {
         await auth.signOut()
         dispatch({type: USER_LOGOUT})
     }
 }
 
-export function setUser(user:any) {
+export function setUser(user:any) { //при первом открытии или обновлении страницы проверить зарегистрированного пользователя
     return async (dispatch:any) => {
         await database.users.doc(user?.uid).get()
         .then((doc) => {
@@ -99,15 +99,6 @@ export function setUser(user:any) {
             } else {
                 dispatch({type: SET_USER, payload: JSON.parse(JSON.stringify(user))})
             }
-
-
-                // console.log("user role:", doc.data()?.role);
-                // if (doc.data()?.role==='admin') {
-                //     dispatch({type: SET_USER_ROLE, payload: {user, isAdmin: true}})
-                // } else {
-                //     dispatch({type: SET_USER_ROLE, payload: {user, isAdmin: false}})
-                // }
-            // } 
         }).catch((error) => {
             console.log("Error getting document:", error);
         });

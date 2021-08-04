@@ -21,6 +21,7 @@ const ChangePasswordField: React.FC<any> = () => {
     const [password, setPassword] = useState<string>('')
     const [confirmPassword, setConfirmPassword] = useState<String>('')//повторить пароль
     const [openTip, setOpenTip] = useState<string>("")
+    const [loading, setLoading] = useState<boolean>(false)
 
     const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => { //записать данные из формы 
         setPassword(event.target.value)
@@ -45,6 +46,7 @@ const ChangePasswordField: React.FC<any> = () => {
           return
         }
 
+        setLoading(true)
         try {
             await dispatch(apdatePassword(password))
             setOpenTip('Пароль изменён')
@@ -63,6 +65,7 @@ const ChangePasswordField: React.FC<any> = () => {
                 break;
             }
         }
+        setLoading(false)
     }
         
     return (
@@ -71,7 +74,7 @@ const ChangePasswordField: React.FC<any> = () => {
             <Typography variant="body1" gutterBottom>Используйте запоминающиеся пароли. Хороший пароль состоит из 6 и более символов, содержит буквы и цифры.</Typography>
             <InputPassword mode="SignUp" cbChangeForm={changeHandler}/>
             <InputPassword mode="SignUp" confirm={true} cbChangeForm={changeConfPassHandler}/>
-            <BtnMain text='СОХРАНИТЬ НОВЫЙ ПАРОЛЬ' cbHendler={savePasswordHandler}/>
+            <BtnMain text='СОХРАНИТЬ НОВЫЙ ПАРОЛЬ' cbHendler={savePasswordHandler} disabled = {loading}/>
             {openTip ?  <OpenTip text={openTip}/> : null}
         </StyledDiv>
     )

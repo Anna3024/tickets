@@ -23,7 +23,7 @@ const AuthProvider = ({ children }) => {
         setLoading(false)
       })
       return unsubscribe
-  }, [])
+  }, [dispatch])
 
   const value = {
       currentUser

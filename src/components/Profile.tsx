@@ -57,6 +57,7 @@ const Profile:React.FC<any> = ({userInfo}) => {
         phone: ""
     })
     const [openTip, setOpenTip] = useState<string>("") //окошко с подсказкой
+    const [loading, setLoading] = useState<boolean>(false)
 
     useEffect(()=>{
 
@@ -70,10 +71,9 @@ const Profile:React.FC<any> = ({userInfo}) => {
             })
         }
             
-    },[])
+    },[userInfo])
     
     const handleDateChange = (event: React.ChangeEvent<any>) => {
-        console.log(event.target.value)
         setForm({...form, birthday: event.target.value})
         setOpenTip("") //закрыть всплывающее окно
     };
@@ -85,7 +85,6 @@ const Profile:React.FC<any> = ({userInfo}) => {
 
     const changeHandlerInputField = (event: React.ChangeEvent<HTMLInputElement>) => { 
         setForm({...form, [event.target.name]: event.target.value})
-        console.log(form)
         setOpenTip("") //закрыть всплывающее окно
     }
 
@@ -122,6 +121,8 @@ const Profile:React.FC<any> = ({userInfo}) => {
 
         form.phone.slice(1).split(/[-]?[(]?[)]?[(\s+)]?/).join("")
 
+        setLoading(true)
+
         try {
             await dispatch(addUserInfo(form))
             setOpenTip('Изменения сохранены')
@@ -137,6 +138,8 @@ const Profile:React.FC<any> = ({userInfo}) => {
             }
             console.log(error)
         }
+
+        setLoading(false)
     }
 
     return (
@@ -191,7 +194,7 @@ const Profile:React.FC<any> = ({userInfo}) => {
                 value = {form.phone}
                 onChange={changeHandlerInputField}
             />
-            <BtnMain text='СОХРАНИТЬ ИЗМЕНЕНИЯ' cbHendler={saveProfileHandler}/>
+            <BtnMain text='СОХРАНИТЬ ИЗМЕНЕНИЯ' cbHendler={saveProfileHandler} disabled = {loading}/>
             {openTip ?  <OpenTip text={openTip}/> : null}
         
         </StyledDiv>
